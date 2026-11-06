@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery List</title>
+
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ06IQF16tQfFt3pRgQ3P1J+v+TIlYZz3UHLJ40UupVZaz4j6bF5e13riPP3" crossorigin="anonymous">
+    <!-- Font Awesome Icons (CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            color: #ff5e78;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .btn-custom {
+            background: linear-gradient(90deg, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            border-radius: 30px;
+            padding: 10px 30px;
+            transition: background-color 0.3s ease, transform 0.2s;
+            display: block;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #ff4e6a 0%, #ff7098 100%);
+            transform: scale(1.05);
+        }
+
+        .table-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 50px; /* Space for the button */
+        }
+
+        .table th, .table td {
+            text-align: center;
+            color: #333333;
+            padding: 15px;
+        }
+
+        .table th {
+            background-color: #ff5e78;
+            color: white;
+        }
+
+        .table {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #ffe0e6;
+            cursor: pointer;
+        }
+
+        .actions a {
+            margin: 0 5px;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .actions .edit-btn {
+            color: #ffc107;
+            transition: all 0.2s ease; /* Smooth transition */
+        }
+
+        .actions .edit-btn:hover {
+            background-color: #ff9d9d;
+            color: #fff; /* Change text color to white */
+            transform: scale(1.05); /* Slightly enlarge button */
+        }
+
+        .actions .delete-btn {
+            color: #dc3545;
+            transition: all 0.2s ease; /* Smooth transition */
+        }
+
+        .actions .delete-btn:hover {
+            background-color: #ff9d9d;
+            color: #fff; /* Change text color to white */
+            transform: scale(1.05); /* Slightly enlarge button */
+        }
+
+        /* Center the button at the bottom of the table */
+        .btn-bottom-center {
+            position: absolute;
+            bottom: 20px;
+            left: 43%;
+            width: auto;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Grocery List</h1>
+
+        <!-- Table inside container -->
+        <div class="table-container">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Created At</th>  <!-- New column for created_at -->
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td style="color:#DB7F8E">{{ forloop.counter }}</td>
+                        <td style="color:#DB7F8E">{{ item.name }}</td>
+                        <td style="color:#DB7F8E">{{ item.quantity }}</td>
+                        <td style="color:#DB7F8E">${{ item.price }}</td>
+                        <td style="color:#DB7F8E">{{ item.created_at|date:"D M d, Y H:i" }}</td> <!-- Display created_at -->
+                        <td class="actions">
+                            <!-- Action Buttons with Icons -->
+                            <a href="{% url 'grocery_update' item.pk %}" class="btn btn-warning btn-sm edit-btn">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'grocery_delete' item.pk %}" class="btn btn-danger btn-sm delete-btn">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Create New Item Button, centered at bottom -->
+        <a href="{% url 'grocery_create' %}" class="btn btn-custom btn-bottom-center">Add New Item</a>
+
+    </div>
+
+    <!-- Bootstrap JS and Popper.js (for modals, tooltips) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybP+8k6y9g6fJtC5Yf5IvFf2mbk9+QdAFOd4y20d4hyF/jW3bD" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0gQcxXj26Z9MFYAtQon6dIBkPPf5u8J6aDF9wbwzjzE+7+J7" crossorigin="anonymous"></script>
+
+</body>
+</html>
